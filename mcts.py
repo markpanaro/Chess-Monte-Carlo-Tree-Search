@@ -48,11 +48,27 @@ def expansion(node):
 
 def simulation(node):
     """Simulate a random game from the given node."""
+    #OG
+    """
     temp_state = node.state.copy()
     while not temp_state.is_game_over(claim_draw=True):
         temp_state.push(random.choice(list(temp_state.legal_moves)))
     result = game_result(temp_state)
     return result
+    """
+    temp_state = node.state.copy()
+    move_limit = 20 
+    moves_played = 0
+    
+    while not temp_state.is_game_over(claim_draw=True) and moves_played < move_limit:
+        temp_state.push(random.choice(list(temp_state.legal_moves)))
+        moves_played += 1
+    
+    if temp_state.is_game_over(claim_draw=True):
+        return game_result(temp_state)  # If the game naturally ends within the move limit
+    else:
+        return game_result(temp_state)
+        #return heuristic_evaluation(temp_state)  # Apply a heuristic evaluation of the position
 
 def backpropagation(node, result):
     """Backpropagate the result of the simulation up the tree."""
