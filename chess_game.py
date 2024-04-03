@@ -15,6 +15,17 @@ def play_game():
     print("Current board state:\n", board.unicode(invert_color=True, borders=True))
 
     while not board.is_game_over(claim_draw=True):     
+        """
+        root = Node(state=board.copy())
+        ai_move = mcts(root, iterations=10)   #.state
+        board.push(ai_move)
+
+        clear_terminal()
+
+        print(f"AI move: {ai_move}")
+        print("Current board state:\n", board.unicode(invert_color=True, borders=True))
+
+        """
         if board.turn == chess.WHITE:   
             # Get the current player's move
             move = input("Enter your move (or 'q' to quit): ")
@@ -28,11 +39,7 @@ def play_game():
                 if chess_move in board.legal_moves:
                     board.push(chess_move)
                     
-                    if platform.system() == "Windows":
-                        os.system('cls')
-                    else:
-                        # Assuming the OS is Unix/Linux/MacOS
-                        os.system('clear')
+                    clear_terminal()
 
                     print("Current board state:\n", board.unicode(invert_color=True, borders=True))
                 else:
@@ -41,22 +48,16 @@ def play_game():
                 print("Invalid move format. Please use UCI format (e.g., 'e2e4').")
         
         else:
-            #ai_move = random.choice(list(board.legal_moves))
-            #board.push(ai_move)
-
-
             root = Node(state=board.copy())
-            ai_move = mcts(root, iterations=100)   #.state
+            ai_move = mcts(root, iterations=10)   #.state
             board.push(ai_move)
 
+            clear_terminal()
 
-            if platform.system() == "Windows":
-                os.system('cls')
-            else:
-                # Assuming the OS is Unix/Linux/MacOS
-                os.system('clear')
             print(f"AI move: {ai_move}")
             print("Current board state:\n", board.unicode(invert_color=True, borders=True))
+        #"""
+            
 
     # The game is over; print the result
     print("Game over")
@@ -72,6 +73,18 @@ def play_game():
         result = "Draw claimed"
     print(f"Result: {result}")
 
+    ply_count = board.ply()
+    move_number = (ply_count + 1) // 2
+    print(f"Move Count: {move_number}")
+
+def clear_terminal():
+    if platform.system() == "Windows":
+        #os.system('cls')
+        pass
+    else:
+        # Assuming the OS is Unix/Linux/MacOS
+        os.system('clear')
+
 def main():
     while True:
         play_game()  # Play a single game.
@@ -82,11 +95,7 @@ def main():
             print("Thank you for playing!")
             break  # Exit the loop if the answer is not 'yes'.
 
-        if platform.system() == "Windows":
-            os.system('cls')
-        else:
-            # Assuming the OS is Unix/Linux/MacOS
-            os.system('clear')
+        clear_terminal()
 
 if __name__ == "__main__":
     main()
