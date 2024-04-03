@@ -16,7 +16,8 @@ def play_game():
 
     while not board.is_game_over(claim_draw=True):     
         #"""
-        root = Node(state=board.copy())
+        root_player_color = chess.WHITE if board.turn else chess.BLACK
+        root = Node(state=board.copy(), player_color=root_player_color)
         ai_move = mcts(root, iterations=100)   #.state
         board.push(ai_move)
 
@@ -48,8 +49,10 @@ def play_game():
                 print("Invalid move format. Please use UCI format (e.g., 'e2e4').")
         
         else:
-            root = Node(state=board.copy())
-            ai_move = mcts(root, iterations=10)   #.state
+            root_player_color = chess.WHITE if board.turn else chess.BLACK
+            root = Node(state=board.copy(), player_color=root_player_color)
+            #root = Node(state=board.copy())
+            ai_move = mcts(root, iterations=100) 
             board.push(ai_move)
 
             clear_terminal()
