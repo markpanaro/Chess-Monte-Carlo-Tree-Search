@@ -18,7 +18,7 @@ def play_game():
         #"""
         root_player_color = chess.WHITE if board.turn else chess.BLACK
         root = Node(state=board.copy(), player_color=root_player_color)
-        ai_move = mcts(root, iterations=100)   #.state
+        ai_move = mcts(root, iterations=300)   
         board.push(ai_move)
 
         clear_terminal()

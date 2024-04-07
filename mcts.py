@@ -58,17 +58,21 @@ def simulation(node):
     return result
     """
     temp_state = node.state.copy()
-    move_limit = 20 
+    move_limit = 10      #20 
     moves_played = 0
     
     while not temp_state.is_game_over(claim_draw=True) and moves_played < move_limit:
         temp_state.push(random.choice(list(temp_state.legal_moves)))
         moves_played += 1
     
+    #return evaluate_state(temp_state, node.player_color) 
+
     if temp_state.is_game_over(claim_draw=True):
-        return game_result(temp_state, node.player_color)  # If the game naturally ends within the move limit
+        return evaluate_state(temp_state, node.player_color) 
+        #return game_result(temp_state, node.player_color)  # If the game naturally ends within the move limit
     else:
-        return game_result(temp_state, node.player_color)
+        return evaluate_state(temp_state, node.player_color)
+        #return game_result(temp_state, node.player_color)
         #return heuristic_evaluation(temp_state)  # Apply a heuristic evaluation of the position
 
 def backpropagation(node, result):
@@ -77,19 +81,12 @@ def backpropagation(node, result):
         node.update(result)
         node = node.parent
 
-def game_result(state, player_color):
+#def game_result(state, player_color):
+def evaluate_state(state, player_color):
     """Determine the game result from the perspective of the current player."""
 
-    # Will need to replace with a better method of evaluation
-    # Playing the game to completion is not practical or effective
     """
-    if state.is_checkmate():
-        return 1  # Win
-    elif state.is_game_over():
-        return 0.5  
-    else:
-        return 0 
-    """
+        # Version 2
     if state.is_checkmate():
         # If the current player is not in turn, it means the player_color has won.
         if state.turn != player_color:
@@ -100,6 +97,74 @@ def game_result(state, player_color):
         return 0.5  # Draw or game over due to other reasons
     else:
         return 0  # Ongoing game
+    """
+
+    # Check for checkmate
+    if state.is_checkmate():
+        if state.turn != player_color:
+            return 100  # Win for player_color
+        else:
+            return -100  # Loss for player_color
+            
+    # Check for draw
+    elif state.is_game_over():
+        return 0 
+        
+    # Calculate material score for ongoing games
+    #return 0
+    
+
+    last_move = state.peek()  
+    if state.is_capture(last_move):
+        # Determine the piece captured
+        captured_piece_type = state.piece_type_at(last_move.to_square)
+        
+        # Assign values to each piece type
+        piece_values = {chess.PAWN: 1, chess.KNIGHT: 3, chess.BISHOP: 3, chess.ROOK: 5, chess.QUEEN: 9}
+        captured_piece_value = piece_values.get(captured_piece_type, 0)
+        
+        # Determine if the captured piece belonged to the player or the opponent
+        if state.color_at(last_move.to_square) != player_color:
+            # Player captured an opponent's piece
+            return captured_piece_value
+        else:
+            # Opponent captured the player's piece
+            return -captured_piece_value
+    else:
+        # No piece was captured
+        return 0
+    
+
+    # return piece_value + check_bonus
+
+
+    # CHECK OUT THE BELOW - IS IT RIGHT?
+    # Go through existing mcts functions and ensure they're operating correctly
+    # Search for improvements to increase iteration count
+    # Perhaps get data on "AI tries to win" impl for presentation
+    
+
+
+
+
+    """
+    material_score = 0
+    piece_values = {chess.PAWN: 1, chess.KNIGHT: 3, chess.BISHOP: 3, chess.ROOK: 5, chess.QUEEN: 9, chess.KING: 0}
+    for piece_type, piece_value in piece_values.items():
+        our_pieces = len(state.pieces(piece_type, player_color))
+        their_pieces = len(state.pieces(piece_type, not player_color))
+        material_score += (our_pieces - their_pieces) * piece_value
+
+        # Check if the opponent is in check
+    check_bonus = 0
+    if state.is_check():
+        # Since is_check() refers to the current player's king, we check if it's not our turn
+        if state.turn != player_color:
+            check_bonus = 5 
+        
+    return material_score + check_bonus
+    """
+    
 
 def mcts(root, iterations=10):
     for _ in range(iterations):
