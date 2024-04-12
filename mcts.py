@@ -53,7 +53,12 @@ def is_piece_threatened(move, state):
 
 def expansion(node):
     """Expand the chosen node by adding a new child."""
-    
+    """
+    move = random.choice(node.untried_moves)
+    new_state = node.state.copy()
+    new_state.push(move)
+    return node.add_child(move, new_state)  
+    """
     threatened_moves = [move for move in node.untried_moves if is_piece_threatened(move, node.state)]
     safe_moves = [move for move in node.untried_moves if not is_piece_threatened(move, node.state)]
     
@@ -66,7 +71,7 @@ def expansion(node):
     # Play the selected move
     new_state = node.state.copy()
     new_state.push(move)
-    return node.add_child(move, new_state)  
+    return node.add_child(move, new_state)
 
 def simulation(node):
     """Simulate a random game from the given node."""

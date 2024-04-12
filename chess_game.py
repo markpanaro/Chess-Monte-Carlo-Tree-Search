@@ -15,10 +15,10 @@ def play_game():
     print("Current board state:\n", board.unicode(invert_color=True, borders=True))
 
     while not board.is_game_over(claim_draw=True):     
-        #"""
+        """
         root_player_color = chess.WHITE if board.turn else chess.BLACK
         root = Node(state=board.copy(), player_color=root_player_color)
-        ai_move = mcts(root, iterations=100)   
+        ai_move = mcts(root, iterations=600)   
         board.push(ai_move)
 
         clear_terminal()
@@ -52,14 +52,14 @@ def play_game():
             root_player_color = chess.WHITE if board.turn else chess.BLACK
             root = Node(state=board.copy(), player_color=root_player_color)
             #root = Node(state=board.copy())
-            ai_move = mcts(root, iterations=600) 
+            ai_move = mcts(root, iterations=1000) 
             board.push(ai_move)
 
             clear_terminal()
 
             print(f"AI move: {ai_move}")
             print("Current board state:\n", board.unicode(invert_color=True, borders=True))
-        """
+        #"""
             
 
     # The game is over; print the result

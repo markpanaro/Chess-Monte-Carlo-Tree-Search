@@ -42,5 +42,5 @@ def self_play(engine_path):
 
 if __name__ == "__main__":
     # Replace the below path with Stockfish's path on your system to try this:
-    engine_path = r"C:\Users\mpanaro\Downloads\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe"
+    engine_path = r"REPLACE_ME"
     self_play(engine_path)
